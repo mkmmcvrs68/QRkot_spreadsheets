@@ -26,3 +26,13 @@ FORMAT = '%Y/%m/%d %H:%M:%S'
 ROWCOUNT = 100
 COLUMNCOUNT = 11
 SHEETID = 0
+
+from app.core.config import settings
+# Нужен совет, необходимо оставить таким образом,
+# или есть другой способ избежать цикличности импорта?
+
+PERMISSIONS_BODY = {
+    'type': 'user',
+    'role': 'writer',
+    'emailAddress': settings.email
+}

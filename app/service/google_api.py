@@ -1,33 +1,41 @@
 from datetime import datetime
 
 from aiogoogle import Aiogoogle
+from typing import Optional
+from copy import deepcopy
+from app.core.constants import COLUMNCOUNT, FORMAT, PERMISSIONS_BODY, ROWCOUNT, SHEETID
 
-from app.core.config import settings
-from app.core.constants import COLUMNCOUNT, FORMAT, ROWCOUNT, SHEETID
+SPREADSHEET_BODY_TITLE = 'Отчет на {}'
 
-
-async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
-    now_date_time = datetime.now().strftime(FORMAT)
-    service = await wrapper_services.discover('sheets', 'v4')
-    spreadsheet_body = {
-        'properties': {
-            'title': f'Отчет на {now_date_time}',
-            'locale': 'ru_RU'
-        },
-        'sheets': [
-            {
-                'properties': {
-                    'sheetType': 'GRID',
-                    'sheetId': SHEETID,
-                    'title': 'Лист1',
-                    'gridProperties': {
-                        'rowCount': ROWCOUNT,
-                        'columnCount': COLUMNCOUNT
-                    }
+SPREADSHEET_BODY = {
+    'properties': {
+        'title': SPREADSHEET_BODY_TITLE,
+        'locale': 'ru_RU'
+    },
+    'sheets': [
+        {
+            'properties': {
+                'sheetType': 'GRID',
+                'sheetId': SHEETID,
+                'title': 'Лист1',
+                'gridProperties': {
+                    'rowCount': ROWCOUNT,
+                    'columnCount': COLUMNCOUNT
                 }
             }
-        ]
-    }
+        }
+    ]
+}
+
+
+async def spreadsheets_create(
+    wrapper_services: Aiogoogle,
+    spreadsheet_body: Optional[dict] = SPREADSHEET_BODY
+) -> str:
+    now_date_time = datetime.now().strftime(FORMAT)
+    service = await wrapper_services.discover('sheets', 'v4')
+    spreadsheet_body = deepcopy(spreadsheet_body)
+    spreadsheet_body['properties']['title'] = SPREADSHEET_BODY_TITLE.format(now_date_time)
     response = await wrapper_services.as_service_account(
         service.spreadsheets.create(json=spreadsheet_body)
     )
@@ -39,11 +47,7 @@ async def set_user_permissions(
         spreadsheetid: str,
         wrapper_services: Aiogoogle
 ) -> None:
-    permissions_body = {
-        'type': 'user',
-        'role': 'writer',
-        'emailAddress': settings.email
-    }
+    permissions_body = PERMISSIONS_BODY
     service = await wrapper_services.discover('drive', 'v3')
     await wrapper_services.as_service_account(
         service.permissions.create(

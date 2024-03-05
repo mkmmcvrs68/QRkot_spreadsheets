@@ -7,7 +7,6 @@ from app.core.db import get_async_session
 from app.core.google_client import get_service
 from app.core.user import current_superuser
 from app.crud import charity_project_crud
-from app.schemas.charity_project import CharityProjecDBSchema
 from app.service.google_api import (set_user_permissions, spreadsheets_create,
                                     spreadsheets_update_value)
 
@@ -16,7 +15,6 @@ router = APIRouter()
 
 @router.post(
     '/',
-    response_model=list[CharityProjecDBSchema],
     dependencies=[Depends(current_superuser)],
 )
 async def get_report(
@@ -36,5 +34,4 @@ async def get_report(
         close_projects=projects,
         wrapper_services=wrapper_services
     )
-    print(SHEETS_URL + spreadsheet_id)
-    return projects
+    return SHEETS_URL + spreadsheet_id
