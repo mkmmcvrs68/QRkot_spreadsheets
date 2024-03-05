@@ -27,12 +27,13 @@ ROWCOUNT = 100
 COLUMNCOUNT = 11
 SHEETID = 0
 
-from app.core.config import settings
+# from app.core.config import settings
 # Нужен совет, необходимо оставить таким образом,
 # или есть другой способ избежать цикличности импорта?
+# На платформе тесты ругаются, поэтому оставлю константу в том же файле
 
-PERMISSIONS_BODY = {
-    'type': 'user',
-    'role': 'writer',
-    'emailAddress': settings.email
-}
+# PERMISSIONS_BODY = {
+#     'type': 'user',
+#     'role': 'writer',
+#     'emailAddress': settings.email
+# }

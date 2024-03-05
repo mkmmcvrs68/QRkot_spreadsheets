@@ -3,7 +3,15 @@ from datetime import datetime
 from aiogoogle import Aiogoogle
 from typing import Optional
 from copy import deepcopy
-from app.core.constants import COLUMNCOUNT, FORMAT, PERMISSIONS_BODY, ROWCOUNT, SHEETID
+from app.core.config import settings
+from app.core.constants import COLUMNCOUNT, FORMAT, ROWCOUNT, SHEETID
+
+
+PERMISSIONS_BODY = {
+    'type': 'user',
+    'role': 'writer',
+    'emailAddress': settings.email
+}
 
 SPREADSHEET_BODY_TITLE = 'Отчет на {}'
 
